@@ -1,4 +1,11 @@
 package sv.edu.udb.Backend.config.exception;
 
-public class JwtAuthenticationException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class JwtAuthenticationException extends RuntimeException {
+    public JwtAuthenticationException(String message) {
+        super(message);
+    }
 }

@@ -1,35 +1,41 @@
 package sv.edu.udb.Backend.controller;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import sv.edu.udb.Backend.config.JwtUtil;
+import sv.edu.udb.Backend.dto.LoginRequest;
+import sv.edu.udb.Backend.dto.JwtResponse;
+import sv.edu.udb.Backend.entity.User;
+import sv.edu.udb.Backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sv.edu.udb.Backend.dto.AuthRequest;
-import sv.edu.udb.Backend.dto.AuthResponse;
-import sv.edu.udb.Backend.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
-@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
 
-    private final AuthService authService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
+
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        AuthResponse response = authService.authenticate(request);
-        return ResponseEntity.ok(response);
-    }
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userService.findByUsername(loginRequest.getUsername())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest request) {
-        AuthResponse response = authService.register(request);
-        return ResponseEntity.ok(response);
-    }
+            if (!userService.validatePassword(loginRequest.getPassword(), user.getPassword())) {
+                return ResponseEntity.badRequest().body("Credenciales inválidas");
+            }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Auth endpoint funcionando correctamente");
+            String token = jwtUtil.generateToken(user.getUsername());
+            return ResponseEntity.ok(new JwtResponse(token, user.getUsername(), user.getEmail()));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error en autenticación: " + e.getMessage());
+        }
     }
 }

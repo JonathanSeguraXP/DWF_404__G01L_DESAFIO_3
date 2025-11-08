@@ -12,7 +12,6 @@ public class JwtResponse {
         this.email = email;
     }
 
-    // Getters
     public String getToken() { return token; }
     public String getType() { return type; }
     public String getUsername() { return username; }

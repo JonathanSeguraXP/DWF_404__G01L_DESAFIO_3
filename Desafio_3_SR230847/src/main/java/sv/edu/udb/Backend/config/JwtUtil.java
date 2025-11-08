@@ -1,14 +1,13 @@
 package sv.edu.udb.Backend.config;
 
-
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "miClaveSecretaMuySeguraParaJWT2024";
-    private final long EXPIRATION_TIME = 86400000; // 24 horas
+    private final String SECRET_KEY = "claveSecretaNovaTech2024";
+    private final long EXPIRATION_TIME = 86400000;
 
     public String generateToken(String username) {
         return Jwts.builder()

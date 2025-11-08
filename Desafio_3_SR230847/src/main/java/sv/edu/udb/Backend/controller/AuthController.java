@@ -35,7 +35,7 @@ public class AuthController {
             return ResponseEntity.ok(new JwtResponse(token, user.getUsername(), user.getEmail()));
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error en autenticación: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 }

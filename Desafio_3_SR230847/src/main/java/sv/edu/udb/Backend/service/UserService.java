@@ -21,7 +21,6 @@ public class UserService {
 
     @PostConstruct
     public void initDefaultUsers() {
-        // Crear usuario por defecto para pruebas
         if (userRepository.findByUsername("admin").isEmpty()) {
             User user = new User();
             user.setUsername("admin");
@@ -29,11 +28,11 @@ public class UserService {
             user.setEmail("admin@novatech.com");
             userRepository.save(user);
 
-            // Crear un segundo usuario de prueba
+            // Usuario adicional
             User user2 = new User();
-            user2.setUsername("usuario");
-            user2.setPassword(passwordEncoder.encode("user123"));
-            user2.setEmail("usuario@novatech.com");
+            user2.setUsername("empleado");
+            user2.setPassword(passwordEncoder.encode("empleado123"));
+            user2.setEmail("empleado@novatech.com");
             userRepository.save(user2);
         }
     }
@@ -50,7 +49,6 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    // Método adicional para crear usuarios
     public User createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
